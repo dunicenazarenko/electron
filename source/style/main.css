@@ -1,0 +1,14 @@
+.container#login-state {
+    margin-top: 30%;
+    width: 500px;
+}
+
+.container#login-state button {
+    width: 100%;
+}
+
+#folders-container, #files-container {
+    display: inline-block;
+    vertical-align: top;
+    width: 49%;
+}

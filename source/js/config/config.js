@@ -1,8 +1,15 @@
 (function () {
-
   angular.module('Electron')
-    .config(function () {
+    .config(configFoo);
 
-    });
+  configFoo.$inject = ['localStorageServiceProvider', '$httpProvider'];
 
+  function configFoo (localStorageServiceProvider, $httpProvider) {
+    localStorageServiceProvider
+      .setPrefix('Workspaces')
+      .setStorageType('sessionStorage')
+      .setNotify(false, false);
+
+    $httpProvider.interceptors.push('TokenInterceptor');
+  }
 })();

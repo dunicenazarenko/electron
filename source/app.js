@@ -1,24 +1,15 @@
 (function () {
-
   angular.module('Electron', [
+    'LocalStorageModule',
     'ngRoute',
     'Electron.controllers',
     'Electron.factories'
   ])
     .run(initFunction);
 
-  initFunction.$inject = ['AuthFactory'];
+  initFunction.$inject = [];
 
-  function initFunction (AuthFactory) {
-    console.log('Run app!');
+  function initFunction() {
 
-    AuthFactory.login('RASadmin', '@Password')
-      .then(function (data) {
-        console.log('data', data);
-      })
-      .catch(function (err) {
-        console.log('err', err);
-      })
   }
-
 })();

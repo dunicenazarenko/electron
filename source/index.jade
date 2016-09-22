@@ -1,0 +1,28 @@
+doctype html
+html(ng-app='Electron')
+	head
+		meta(charset='UTF-8')
+		title Workspaces Electron App
+
+		link(rel='stylesheet', href='css/bootstrap.css')
+		link(rel='stylesheet', href='css/main.css')
+
+		script(type='text/javascript', src='vendor.js')
+		script(type='text/javascript', src='all.js')
+
+	body
+		div(ng-controller='mainController as vm')
+			//login screen
+			#login-page.container(ng-if='!vm.login_state')
+				.form-group
+					input.form-control(type='text', placeholder='Username', ng-model='vm.login_username')
+				.form-group
+					input.form-control(type='password', placeholder='Password', ng-model='vm.login_password')
+				.form-group
+					button.btn.btn-primary(ng-click='vm.login()') Sign in
+
+			//app screen
+			#documents.container
+				.folder-tree
+					.folder-tree-el(ng-repeat='item in vm.clientFoldersTree track by $index' ng-click='vm.clickOnFolder(item.id)')
+						| {{item.title}}

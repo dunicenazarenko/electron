@@ -1,69 +1,58 @@
 (function () {
-
   angular.module('Electron.controllers')
     .controller('mainController', mainController);
 
-  mainController.$inject = [];
+  mainController.$inject = ['$scope', '$rootScope', 'localStorageService', 'AuthFactory', 'DocumentFactory'];
 
-  function mainController () {
+  function mainController($scope, $rootScope, localStorageService, AuthFactory, DocumentFactory) {
+    var vm = this;
+
+    //login info
+    vm.login_state = false;
+    vm.login_username = 'f12345';
+    vm.login_password = '@Password';
+
+    //variable
+    vm.clientFoldersTree = [];
+
+    //function
+    vm.login = login;
+    vm.clickOnFolder = clickOnFolder;
 
 
+    function login() {
+      if (!vm.login_username || !vm.login_password) return;
 
+      var login_data = {
+        username: vm.login_username,
+        password: vm.login_password
+      };
+
+      AuthFactory.login(login_data)
+        .then(function (request) {
+          if (request.data && request.data.token) {
+            localStorageService.set('user', request.data);
+            localStorageService.set('token', request.data.token);
+            vm.login_state = true;
+            get_folders_data(request.data.org_id);
+          }
+        })
+        .catch(function (err) {
+          console.log('err', err);
+        });
+    }
+
+    function get_folders_data(org_id) {
+      DocumentFactory.myFolderTree()
+        .then(function (request) {
+          vm.clientFoldersTree = request.data.folders_tree;
+        })
+        .catch(function (err) {
+          console.log('err', err);
+        });
+    }
+
+    function clickOnFolder(folderId) {
+    }
   }
-
 })();
-
-
-var fs = require('fs');
-var _  = require('lodash');
-
-var watch = null;
-
-function change_input(event) {
-  if (watch) {
-    watch.close();
-  }
-  var path = event.target.files[0].path;
-  start_watch(path);
-}
-
-function start_watch (path) {
-  read_dir(path);
-  watch = fs.watch(path, function () {
-    read_dir(path);
-  });
-}
-
-function read_dir (path) {
-  fs.readdir(path, function (err, data) {
-    var parent_folders = document.getElementById('folders-container');
-    while (parent_folders.firstChild) {
-      parent_folders.removeChild(parent_folders.firstChild);
-    }
-
-    var parent_files = document.getElementById('files-container');
-    while (parent_files.firstChild) {
-      parent_files.removeChild(parent_files.firstChild);
-    }
-
-    var folders = [];
-    var files = [];
-
-    for (var i = 0; i < data.length; i++) {
-      var check = fs.lstatSync(path + '/' + data[i]).isDirectory();
-      if (check) {
-        folders.push(data[i]);
-      } else {
-        files.push(data[i]);
-      }
-    }
-
-    var compiled_folders = _.template('<p>Folders:</p><% _.forEach(data, function(d) { %><p><%- d %></p><% }); %>');
-    var html_folders = compiled_folders({'data': folders});
-    parent_folders.insertAdjacentHTML('beforeend', html_folders);
-
-    var compiled_files = _.template('<p>Files:</p><% _.forEach(data, function(d) { %><p><%- d %></p><% }); %>');
-    var html_files = compiled_files({'data': files});
-    parent_files.insertAdjacentHTML('beforeend', html_files);
-  });
-}

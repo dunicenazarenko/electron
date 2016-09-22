@@ -1,5 +1,3 @@
 (function () {
-  angular.module('Electron.controllers', [
-
-  ]);
+  angular.module('Electron.controllers', [ ]);
 })();

@@ -14,11 +14,12 @@
 
     //variable
     vm.clientFoldersTree = [];
+    vm.clientContentFolders = [];
+    vm.clientContentFiles = [];
 
     //function
     vm.login = login;
     vm.clickOnFolder = clickOnFolder;
-
 
     function login() {
       if (!vm.login_username || !vm.login_password) return;
@@ -34,7 +35,7 @@
             localStorageService.set('user', request.data);
             localStorageService.set('token', request.data.token);
             vm.login_state = true;
-            get_folders_data(request.data.org_id);
+            get_folders_data();
           }
         })
         .catch(function (err) {
@@ -42,7 +43,7 @@
         });
     }
 
-    function get_folders_data(org_id) {
+    function get_folders_data() {
       DocumentFactory.myFolderTree()
         .then(function (request) {
           vm.clientFoldersTree = request.data.folders_tree;
@@ -52,7 +53,24 @@
         });
     }
 
-    function clickOnFolder(folderId) {
+    function clickOnFolder(event, item) {
+      updateTree(event);
+      DocumentFactory.myFolderContent(item.id)
+        .then(function (request) {
+          vm.clientContentFolders = request.data.folders;
+          vm.clientContentFiles = request.data.files;
+        })
+        .catch(function (err) {
+          console.log('err', err);
+        });
+    }
+
+    function updateTree(event) {
+      var check = $(event.target).parent().parent().hasClass('folder-tree-el-top');
+      if (check) {
+        $('.child-container').removeClass('active');
+      }
+      $(event.target).parent().addClass('active');
     }
   }
 })();

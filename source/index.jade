@@ -7,8 +7,18 @@ html(ng-app='Electron')
 		link(rel='stylesheet', href='css/bootstrap.css')
 		link(rel='stylesheet', href='css/main.css')
 
+		script.
+			if (typeof module === 'object') {
+				window.module = module;
+				module = undefined;
+			}
+
 		script(type='text/javascript', src='vendor.js')
 		script(type='text/javascript', src='all.js')
+
+		script.
+			if (window.module)
+				module = window.module;
 
 	body
 		div(ng-controller='mainController as vm')
@@ -22,7 +32,16 @@ html(ng-app='Electron')
 					button.btn.btn-primary(ng-click='vm.login()') Sign in
 
 			//app screen
-			#documents.container
+			#documents.container(ng-if='vm.login_state')
 				.folder-tree
-					.folder-tree-el(ng-repeat='item in vm.clientFoldersTree track by $index' ng-click='vm.clickOnFolder(item.id)')
-						| {{item.title}}
+					.folder-tree-el-top(ng-repeat='folder in vm.clientFoldersTree track by $index' ng-if='!folder.is_deleted' ng-include="'folderTemplate'" ng-init="item = folder")
+				.folder-content
+					.folder-content-el-folder(ng-repeat='folder in vm.clientContentFolders track by $index')
+						p {{folder.folder_name}}
+					.folder-content-el-file(ng-repeat='file in vm.clientContentFiles track by $index')
+						p {{file.file_name}}
+
+			script(type='text/ng-template', id='folderTemplate')
+				.child-container
+					span(ng-click='vm.clickOnFolder($event, item)') {{item.title}}
+					.folder-tree-el-children(ng-repeat='children in item.items track by $index' ng-if='item.items && item.items.length && !children.is_deleted' ng-include="'folderTemplate'" ng-init="item = children")

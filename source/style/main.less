@@ -6,10 +6,53 @@
       width: 100%;
     }
   }
-}
+  &#documents {
+    .folder-tree, .folder-content {
+      border: 1px solid grey;
+      border-radius: 10px;
+      display: inline-block;
+      vertical-align: top;
+    }
 
-#folders-container, #files-container {
-  display: inline-block;
-  vertical-align: top;
-  width: 49%;
+    .folder-tree {
+      width: 30%;
+      padding-right: 10px;
+      .folder-tree-el-top {
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 0;
+        .child-container {
+          margin-left: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          .folder-tree-el-children {
+            display: none;
+          }
+          &.active {
+            > .folder-tree-el-children {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+    .folder-content {
+      width: 70%;
+      padding-left: 10px;
+      .folder-content-el-folder, .folder-content-el-file {
+        border-bottom: 1px solid grey;
+        font-size: 16px;
+        overflow-wrap: break-word;
+        padding: 10px 0;
+        &:last-child {
+          border-bottom: none;
+        }
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
 }

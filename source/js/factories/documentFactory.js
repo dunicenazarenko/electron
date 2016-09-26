@@ -8,20 +8,19 @@
 
     var document_url = {
       get: {
-        clientFolderTree: DEV_url.api + '/api/v1/dm/folderstreebyorg/' + '',
-        myFolderTree    : DEV_url.api + '/api/v1/dm/folderstree'
+        myFolderContent: DEV_url.api + '/api/v1/dm/filesbyfolderid/' + '',
+        myFolderTree   : DEV_url.api + '/api/v1/dm/folderstree'
       }
     };
 
     return {
-      clientFolderTree: clientFolderTree,
-      myFolderTree    : myFolderTree
+      myFolderContent: myFolderContent,
+      myFolderTree   : myFolderTree
     };
 
-    function clientFolderTree(params) {
-      return $http.get(document_url.get.clientFolderTree + params);
+    function myFolderContent(params) {
+      return $http.get(document_url.get.myFolderContent + params);
     }
-
     function myFolderTree() {
       return $http.get(document_url.get.myFolderTree);
     }
